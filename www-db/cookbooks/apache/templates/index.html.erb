@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<title>Hello, <%= @name %>!</title>
+		<style>
+			table { width: 25%; }
+			table,th,td { border: 1px solid black; border-collapse: collapse; }
+			th,td { padding: 5px; }
+		</style>
+	</head>
+
+	<body>
+		<h1>Hello, <%= @name %>!</h1>
+
+		<table>
+			<thead>
+				<tr>
+					<th>State</th>
+					<th>Abbreviation</th>
+				</tr>
+			</thead>
+			
+			<tbody>
+				<?php
+					$db_ip = "192.168.33.10";
+					$db_user = "state_user";
+					$db_pass = "test123";
+					$db_name = "statedb";
+
+					// Create connection
+					$conn = new mysqli($db_ip, $db_user, $db_pass, $db_name);
+					
+					// Check connection
+					if ($conn->connect_error) {
+						die("Connection failed: " . $conn->connect_error);
+					}
+
+					$sql = "SELECT state,abbreviation FROM states";
+					$result = $conn->query($sql);
+
+					if ($result->num_rows > 0) {
+						// output data of each row
+						while ($row = $result->fetch_assoc()) {
+							echo "<tr><td>" . $row["state"] . "</td><td>" . $row["abbreviation"] . "</td></tr>";
+						}
+					} else {
+						echo "0 results";
+					}
+
+					$conn->close();
+				?>
+			</tbody>
+		</table>
+
+		<p>
+			This web server and template were
+			installed to <%= node[:fqdn] %>
+			with IP address <%= node['ipaddress'] %>.
+		</p>
+	</body>
+</html>

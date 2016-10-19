@@ -1,12 +1,19 @@
 # Install the MySQL server
 mysql_service 'default' do
-  port '3306'
   version '5.5'
-  initial_root_password 'MyHovercraftIsFullOfEels'
+  initial_root_password node['statedb']['database']['root_password']
   action [:create, :start]
 end
 
+# Install the MySQL client
+mysql_client 'default' do
+  action :create
+  package_version ''
+  version '5.5'
+end
+
 # Install the mysql2 Ruby gem for the database resources
+package 'libmysqlclient-dev'
 mysql2_chef_gem 'default' do
   action :install
 end
@@ -33,10 +40,10 @@ mysql_database_user node['statedb']['database']['statedb_username'] do
   action [:create, :grant]
 end
 
-# Populate database
-create_tables_script_path = File.join(Chef::Config[:file_cache_path], 'statedb.sql')
+# Create the table
+create_tables_script_path = File.join(Chef::Config[:file_cache_path], 'states-table.sql')
 cookbook_file create_tables_script_path do
-  source 'statedb.sql'
+  source 'states-table.sql'
   owner 'root'
   group 'root'
   mode '0600'
@@ -44,5 +51,19 @@ end
 mysql_database node['statedb']['database']['dbname'] do
   connection mysql_connection_info
   sql { ::File.open(create_tables_script_path).read }
+  action :query
+end
+
+# Populate the table
+insert_data_script_path = File.join(Chef::Config[:file_cache_path], 'states-data.sql')
+cookbook_file insert_data_script_path do
+  source 'states-data.sql'
+  owner 'root'
+  group 'root'
+  mode '0600'
+end
+mysql_database node['statedb']['database']['dbname'] do
+  connection mysql_connection_info
+  sql { ::File.open(insert_data_script_path).read }
   action :query
 end

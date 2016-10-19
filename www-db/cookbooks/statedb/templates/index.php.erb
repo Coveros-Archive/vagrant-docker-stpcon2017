@@ -21,13 +21,14 @@
 			
 			<tbody>
 				<?php
-					$db_ip = "192.168.33.10";
-					$db_user = "state_user";
-					$db_pass = "test123";
-					$db_name = "statedb";
+					$db_host = "<%= @db_host %>";
+					$db_name = "<%= @db_name %>";
+					$db_user = "<%= @db_user %>";
+					// Never, ever put a clear text password into the source
+					$db_pass = "<%= @db_pass %>";
 
 					// Create connection
-					$conn = new mysqli($db_ip, $db_user, $db_pass, $db_name);
+					$conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
 					
 					// Check connection
 					if ($conn->connect_error) {

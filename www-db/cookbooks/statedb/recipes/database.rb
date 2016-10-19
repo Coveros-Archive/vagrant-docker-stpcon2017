@@ -36,7 +36,8 @@ mysql_database_user node['statedb']['database']['statedb_username'] do
   connection mysql_connection_info
   password node['statedb']['database']['statedb_password']
   database_name node['statedb']['database']['dbname']
-  host node['statedb']['database']['host']
+  host '%'
+	privileges [:select]
   action [:create, :grant]
 end
 

@@ -16,6 +16,8 @@ services:
       - db
     ports:
       - 80:80
+    volumes:
+      - ./www/src/:/var/www/html/
     environment:
       NAME: "StarCanada 2016"
       DB_HOST: "db"

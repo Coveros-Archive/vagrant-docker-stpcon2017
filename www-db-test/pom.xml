@@ -25,7 +25,6 @@
 
         <junit.version>4.12</junit.version>
         <selenium.version>3.0.1</selenium.version>
-        <saucelabs.version>2.1.21</saucelabs.version>
         <webdrivermanager.version>1.4.10</webdrivermanager.version>
     </properties>
 
@@ -58,11 +57,6 @@
                 <version>${selenium.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.saucelabs</groupId>
-                <artifactId>sauce_junit</artifactId>
-                <version>${saucelabs.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>io.github.bonigarcia</groupId>
                 <artifactId>webdrivermanager</artifactId>
                 <version>${webdrivermanager.version}</version>
@@ -78,10 +72,6 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.saucelabs</groupId>
-            <artifactId>sauce_junit</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.bonigarcia</groupId>

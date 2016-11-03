@@ -1,0 +1,12 @@
+name 'statedb'
+maintainer 'Gene Gotimer'
+maintainer_email 'gene.gotimer@coveros.com'
+license 'Apache v2.0'
+description 'Installs/Configures mysql'
+long_description 'Installs/Configures MySQL and a database of state names and abbreviations'
+version '0.0.1'
+
+depends 'mysql', '~> 8.0'
+depends 'mysql2_chef_gem', '~> 1.1.0'
+depends 'database', '~> 6.0.0'
+depends 'httpd', '~> 0.4.4'

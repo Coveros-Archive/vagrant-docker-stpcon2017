@@ -1,0 +1,26 @@
+version: '2'
+services:
+  db:
+    image: mysql:5.5
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: "My hovercraft is full of eels."
+      MYSQL_DATABASE: "statedb"
+      MYSQL_USER: "state_user"
+      MYSQL_PASSWORD: "Can you direct me to the station?"
+
+  www:
+    build: www
+    depends_on:
+      - db
+    ports:
+      - 80:80
+    volumes:
+      - ./www/src/:/var/www/html/
+    environment:
+      NAME: "StarCanada 2016"
+      DB_HOST: "db"
+      DB_NAME: "statedb"
+      DB_USER: "state_user"
+      DB_PASS: "Can you direct me to the station?"

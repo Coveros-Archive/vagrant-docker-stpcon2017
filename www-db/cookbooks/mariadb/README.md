@@ -1,7 +1,7 @@
 MariaDB Cookbook
 ================
 
-[![Build Status](https://travis-ci.org/sinfomicien/mariadb.png)](https://travis-ci.org/sinfomicien/mariadb)
+[![Build Status](https://travis-ci.org/sinfomicien/mariadb.svg?branch=master)](https://travis-ci.org/sinfomicien/mariadb) [![Cookbook Version](https://img.shields.io/cookbook/v/mariadb.svg)](https://supermarket.chef.io/cookbooks/mariadb)
 
 Description
 -----------
@@ -23,8 +23,8 @@ Requirements
 
 #### operating system
 - `debian` - this cookbook is fully tested on debian
-- `ubuntu` - not fully tested on ubuntu, but should work
-- `centos` - not fully tested on centos, but should work
+- `ubuntu` - this cookbook is fully tested on ubuntu
+- `centos` - this cookbook is fully tested on centos
 
 Attributes
 ----------
@@ -46,7 +46,7 @@ Attributes
   <tr>
     <td><tt>['mariadb']['use_default_repository']</tt></td>
     <td>Boolean</td>
-    <td>Wether to install MariaDB default repository or not. If you don't have a local repo containing packages, put it to true</td>
+    <td>Whether to install MariaDB default repository or not. If you don't have a local repo containing packages, put it to true</td>
     <td><tt>false</tt></td>
   </tr>
   <tr>
@@ -58,19 +58,19 @@ Attributes
   <tr>
     <td><tt>['mariadb']['forbid_remote_root']</tt></td>
     <td>Boolean</td>
-    <td>Wether to activate root remote access</td>
+    <td>Whether to activate root remote access</td>
     <td><tt>true</tt></td>
   </tr>
   <tr>
     <td><tt>['mariadb']['allow_root_pass_change']</tt></td>
     <td>Boolean</td>
-    <td>Wether to allow the recipe to change root password after the first install</td>
+    <td>Whether to allow the recipe to change root password after the first install</td>
     <td><tt>false</tt></td>
   </tr>
   <tr>
     <td><tt>['mariadb']['client']['development_files']</tt></td>
     <td>Boolean</td>
-    <td>Wether to install development files in client recipe</td>
+    <td>Whether to install development files in client recipe</td>
     <td><tt>true</tt></td>
   </tr>
   <tr>
@@ -83,6 +83,12 @@ Attributes
     <td><tt>['mariadb']['install']['prefer_os_package']</tt></td>
     <td>Boolean</td>
     <td>Indicator for preferring use packages shipped by running os</td>
+    <td><tt>false</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['mariadb']['install']['prefer_scl_package']</tt></td>
+    <td>Boolean</td>
+    <td>Indicator for preferring packages from software collections repository</td>
     <td><tt>false</tt></td>
   </tr>
 </table>
@@ -130,7 +136,8 @@ Example:
 ```ruby
 mariadb_configuration 'fake' do
   section 'mysqld'
-  option {foo: 'bar'}
+  option :innodb_buffer_pool_size => node['mysql']['innodb_buffer_pool_size'],
+    :innodb_flush_method => node['mysql']['innodb_flush_method']
 end
 ```
 will become the file fake.cnf in the include dir (depend on your platform), which contain:
@@ -145,7 +152,8 @@ Example:
 ```ruby
 mariadb_configuration 'fake' do
   section 'mysqld'
-  option {comment1: '# Here i am', foo: bar}
+  option :comment1 => '# Here i am',
+    :foo => bar
 end
 ```
 will become the file fake.cnf in the include dir (depend on your platform), which contain:

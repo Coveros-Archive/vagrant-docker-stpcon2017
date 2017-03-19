@@ -18,11 +18,13 @@
 
 Chef::Recipe.send(:include, MariaDB::Helper)
 
-service_name = os_service_name(node['platform'], node['platform_version'])
-node.default['mariadb']['mysqld']['service_name'] = service_name\
-  unless service_name.nil?
+node.default['mariadb']['mysqld']['service_name'] =
+  "#{scl_collection_name(node['mariadb']['install']['version'])}-mariadb"
 
-package 'mariadb-server' do
+include_recipe 'yum-scl'
+
+package_name = scl_package_name(node['mariadb']['install']['version'], 'mariadb-server')
+package package_name do
   action :install
   notifies :enable, 'service[mysql]'
 end
@@ -36,9 +38,13 @@ directory '/var/log/mysql' do
   notifies :run, 'execute[change first install root password]', :immediately
 end
 
+mysqladmin_cmd = mysqlbin_cmd(node['mariadb']['install']['prefer_scl_package'],
+                              node['mariadb']['install']['version'],
+                              'mysqladmin')
+
 execute 'change first install root password' do
-  command '/usr/bin/mysqladmin -u root password \'' + \
-    node['mariadb']['server_root_password'] + '\''
+  command "#{mysqladmin_cmd} -u root password "\
+          "'#{node['mariadb']['server_root_password']}'"
   action :nothing
   sensitive true
   not_if { node['mariadb']['server_root_password'].empty? }

@@ -37,12 +37,12 @@ directory '/var/log/mysql' do
 end
 
 execute 'change first install root password' do
-  # Add sensitive true when foodcritic #233 fixed
   command '/usr/bin/mysqladmin -u root password \'' + \
     node['mariadb']['server_root_password'] + '\''
   action :nothing
+  sensitive true
   not_if { node['mariadb']['server_root_password'].empty? }
 end
 
 # Default policy for RH and fedora is to name it mysql
-node.set['mariadb']['mysqld']['service_name'] = 'mysql'
+node.default['mariadb']['mysqld']['service_name'] = 'mysql'

@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+# rubocop:disable Lint/EmptyWhen
+
 Chef::Recipe.send(:include, MariaDB::Helper)
 case node['mariadb']['install']['type']
 when 'package'
@@ -25,6 +27,11 @@ when 'package'
     # currently, no releases with apt (e.g. ubuntu) ship mariadb
     # only provide one type of server here (with yum support)
     include_recipe "#{cookbook_name}::_redhat_server_native"
+  elsif use_scl_package?(node['mariadb']['install']['prefer_scl_package'],
+                         node['platform'], node['platform_version']) &&
+      scl_version_available?(node['mariadb']['install']['version'])
+    # only for RH family distributives
+    include_recipe "#{cookbook_name}::_redhat_server_scl"
   else
     include_recipe "#{cookbook_name}::repository"
 
@@ -49,7 +56,7 @@ end
 
 # move the datadir if needed
 if node['mariadb']['mysqld']['datadir'] !=
-   node['mariadb']['mysqld']['default_datadir']
+    node['mariadb']['mysqld']['default_datadir']
 
   bash 'move-datadir' do
     user 'root'
@@ -66,7 +73,7 @@ if node['mariadb']['mysqld']['datadir'] !=
   directory node['mariadb']['mysqld']['datadir'] do
     owner 'mysql'
     group 'mysql'
-    mode 00750
+    mode '0750'
     action :create
     notifies :stop, 'service[mysql]', :immediately
     notifies :run, 'bash[move-datadir]', :immediately
@@ -93,11 +100,11 @@ end
 if node['mariadb']['allow_root_pass_change']
   # Used to change root password after first install
   # Still experimental
-  if node['mariadb']['server_root_password'].empty?
-    md5 = Digest::MD5.hexdigest('empty')
-  else
-    md5 = Digest::MD5.hexdigest(node['mariadb']['server_root_password'])
-  end
+  md5 = if node['mariadb']['server_root_password'].empty?
+          Digest::MD5.hexdigest('empty')
+        else
+          Digest::MD5.hexdigest(node['mariadb']['server_root_password'])
+        end
 
   file '/etc/mysql_root_change' do
     content md5
@@ -107,24 +114,27 @@ if node['mariadb']['allow_root_pass_change']
 end
 
 if  node['mariadb']['allow_root_pass_change'] ||
-    node['mariadb']['forbid_remote_root']
+    node['mariadb']['remove_anonymous_users'] ||
+    node['mariadb']['forbid_remote_root'] ||
+    node['mariadb']['remove_test_database']
   execute 'install-grants' do
-    # Add sensitive true when foodcritic #233 fixed
-    command '/bin/bash /etc/mariadb_grants \'' + \
+    command '/bin/bash -e /etc/mariadb_grants \'' + \
       node['mariadb']['server_root_password'] + '\''
     only_if { File.exist?('/etc/mariadb_grants') }
+    sensitive true
     action :nothing
   end
-
   template '/etc/mariadb_grants' do
     sensitive true
     source 'mariadb_grants.erb'
     owner 'root'
     group 'root'
     mode '0600'
+    helpers MariaDB::Helper
     notifies :run, 'execute[install-grants]', :immediately
   end
 end
 
 # MariaDB Plugins
-include_recipe "#{cookbook_name}::plugins" if node['mariadb']['plugins_options']['auto_install']
+include_recipe "#{cookbook_name}::plugins" if \
+  node['mariadb']['plugins_options']['auto_install']

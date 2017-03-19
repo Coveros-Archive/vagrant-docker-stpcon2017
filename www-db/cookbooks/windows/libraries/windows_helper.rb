@@ -1,9 +1,9 @@
 #
 # Author:: Seth Chisamore (<schisamo@chef.io>)
-# Cookbook Name:: windows
+# Cookbook:: windows
 # Library:: helper
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2011-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -122,6 +122,12 @@ module Windows
         installed_packages.merge!(extract_installed_packages_from_key(::Win32::Registry::HKEY_CURRENT_USER)) # rescue nil
         installed_packages
       end
+    end
+
+    # Returns an array
+    def to_array(var)
+      var = var.is_a?(Array) ? var : [var]
+      var.reject(&:nil?)
     end
 
     private

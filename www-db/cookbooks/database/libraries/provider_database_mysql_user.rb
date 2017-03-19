@@ -1,7 +1,7 @@
 #
 # Author:: Seth Chisamore (<schisamo@chef.io>)
 # Author:: Sean OMeara (<sean@sean.io>)
-# Copyright:: 2011-2015 Chef Software, Inc.
+# Copyright:: 2011-2016 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -144,6 +144,7 @@ class Chef
                                 " '#{new_resource.password}'"
                               end
                 repair_sql += ' REQUIRE SSL' if new_resource.require_ssl
+                repair_sql += ' REQUIRE X509' if new_resource.require_x509
                 repair_sql += ' WITH GRANT OPTION' if new_resource.grant_option
 
                 Chef::Log.info("#{@new_resource}: granting with sql [#{repair_sql}]")

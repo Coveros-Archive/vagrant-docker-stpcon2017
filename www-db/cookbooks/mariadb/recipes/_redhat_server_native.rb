@@ -19,7 +19,7 @@
 Chef::Recipe.send(:include, MariaDB::Helper)
 
 service_name = os_service_name(node['platform'], node['platform_version'])
-node.set['mariadb']['mysqld']['service_name'] = service_name\
+node.default['mariadb']['mysqld']['service_name'] = service_name\
   unless service_name.nil?
 
 package 'mariadb-server' do
@@ -37,9 +37,9 @@ directory '/var/log/mysql' do
 end
 
 execute 'change first install root password' do
-  # Add sensitive true when foodcritic #233 fixed
   command '/usr/bin/mysqladmin -u root password \'' + \
     node['mariadb']['server_root_password'] + '\''
   action :nothing
+  sensitive true
   not_if { node['mariadb']['server_root_password'].empty? }
 end

@@ -2,7 +2,7 @@
 # Author:: Seth Chisamore (<schisamo@chef.io>)
 # Author:: Lamont Granquist (<lamont@chef.io>)
 # Author:: Marco Betti (<m.betti@gmail.com>)
-# Copyright:: 2011-2015 Chef Software, Inc.
+# Copyright:: 2011-2016 Chef Software, Inc.
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,10 @@ class Chef
         @replication = REPLICATION_DEFAULT
         @superuser = SUPERUSER_DEFAULT
         @schema_name = nil
-        @allowed_actions.push(:create, :drop, :grant, :grant_schema)
+        @tables = [:all]
+        @sequences = [:all]
+        @functions = [:all]
+        @allowed_actions.push(:create, :drop, :grant, :grant_schema, :grant_table, :grant_sequence, :grant_function)
       end
 
       def createdb(arg = nil)
@@ -96,6 +99,30 @@ class Chef
           :superuser,
           arg,
           equal_to: [true, false]
+        )
+      end
+
+      def tables(arg = nil)
+        set_or_return(
+          :tables,
+          arg,
+          kind_of: Array, default: [:all]
+        )
+      end
+
+      def sequences(arg = nil)
+        set_or_return(
+          :sequences,
+          arg,
+          kind_of: Array, default: [:all]
+        )
+      end
+
+      def functions(arg = nil)
+        set_or_return(
+          :functions,
+          arg,
+          kind_of: Array, default: [:all]
         )
       end
     end

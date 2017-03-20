@@ -1,7 +1,11 @@
 #
 # Author:: Seth Chisamore (<schisamo@chef.io>)
 # Author:: Lamont Granquist (<lamont@chef.io>)
+<<<<<<< HEAD
 # Copyright:: 2011-2015 Chef Software, Inc.
+=======
+# Copyright:: 2011-2016 Chef Software, Inc.
+>>>>>>> develop
 # License:: Apache License, Version 2.0
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

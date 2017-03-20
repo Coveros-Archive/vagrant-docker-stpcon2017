@@ -20,9 +20,16 @@ can be instantly reloaded in the browser.
 
     docker-compose up -d
 		
+## Visit the site:
+
+    http://ip/
+
 ## To find the IP address the web server is listening on:
 
-    docker-machine ip
+### Running Docker Toolkit or Docker for Linux: 
+	docker-machine ip
+### Running Docker for Windows:
+The IP address is localhost or 127.0.0.1.
 
 ## To reload the data into the table (by recreating the containers):
 

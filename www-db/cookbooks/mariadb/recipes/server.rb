@@ -17,42 +17,51 @@
 # limitations under the License.
 #
 
-# rubocop:disable Lint/EmptyWhen
-
 Chef::Recipe.send(:include, MariaDB::Helper)
+
+extend Chef::Util::Selinux
+selinux_enabled = selinux_enabled?
+
 case node['mariadb']['install']['type']
 when 'package'
-  if use_os_native_package?(node['mariadb']['install']['prefer_os_package'],
-                            node['platform'], node['platform_version'])
-    # currently, no releases with apt (e.g. ubuntu) ship mariadb
-    # only provide one type of server here (with yum support)
-    include_recipe "#{cookbook_name}::_redhat_server_native"
-  elsif use_scl_package?(node['mariadb']['install']['prefer_scl_package'],
-                         node['platform'], node['platform_version']) &&
-      scl_version_available?(node['mariadb']['install']['version'])
-    # only for RH family distributives
-    include_recipe "#{cookbook_name}::_redhat_server_scl"
-  else
-    include_recipe "#{cookbook_name}::repository"
-
-    case node['platform']
-    when 'debian', 'ubuntu'
-      include_recipe "#{cookbook_name}::_debian_server"
-    when 'redhat', 'centos', 'fedora', 'scientific', 'amazon'
-      include_recipe "#{cookbook_name}::_redhat_server"
-    end
+  # Determine service name and register the resource
+  service_name = mariadb_service_name(node['platform'],
+                                      node['platform_version'],
+                                      node['mariadb']['install']['version'],
+                                      node['mariadb']['install']['prefer_os_package'],
+                                      node['mariadb']['install']['prefer_scl_package'])
+  node.default['mariadb']['mysqld']['service_name'] = service_name unless service_name.nil?
+  service 'mysql' do
+    service_name node['mariadb']['mysqld']['service_name']
+    supports restart: true
+    action :nothing
   end
-when 'from_source'
-  # To be filled as soon as possible
+
+  # Include recipe to install required repositories
+  include_recipe "#{cookbook_name}::_mariadb_repository"
+
+  # Include platform specific recipes
+  case node['platform']
+  when 'debian', 'ubuntu'
+    include_recipe "#{cookbook_name}::_debian_server"
+  when 'redhat', 'centos', 'scientific', 'amazon'
+    include_recipe "#{cookbook_name}::_redhat_server"
+  end
+
+  # Install server package
+  server_package_name = packages_names_to_install(node['platform'],
+                                                  node['platform_version'],
+                                                  node['mariadb']['install']['version'],
+                                                  node['mariadb']['install']['prefer_os_package'],
+                                                  node['mariadb']['install']['prefer_scl_package'])['server']
+  package 'MariaDB-server' do
+    package_name server_package_name
+    action :install
+    notifies :enable, 'service[mysql]'
+  end
 end
 
 include_recipe "#{cookbook_name}::config"
-
-service 'mysql' do
-  service_name node['mariadb']['mysqld']['service_name']
-  supports restart: true
-  action :nothing
-end
 
 # move the datadir if needed
 if node['mariadb']['mysqld']['datadir'] !=
@@ -67,6 +76,14 @@ if node['mariadb']['mysqld']['datadir'] !=
     /bin/ln -s #{node['mariadb']['mysqld']['datadir']} \
                #{node['mariadb']['mysqld']['default_datadir']}
     EOH
+    action :nothing
+  end
+
+  bash 'Restore security context' do
+    user 'root'
+    code "/usr/sbin/restorecon -v #{node['mariadb']['mysqld']['default_datadir']}"
+    only_if { selinux_enabled }
+    subscribes :run, 'bash[move-datadir]', :immediately
     action :nothing
   end
 

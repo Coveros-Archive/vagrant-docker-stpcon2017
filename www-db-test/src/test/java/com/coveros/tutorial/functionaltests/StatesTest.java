@@ -1,9 +1,6 @@
 package com.coveros.tutorial.functionaltests;
 
-import io.github.bonigarcia.wdm.ChromeDriverManager;
-import io.github.bonigarcia.wdm.EdgeDriverManager;
-import io.github.bonigarcia.wdm.InternetExplorerDriverManager;
-import io.github.bonigarcia.wdm.MarionetteDriverManager;
+import io.github.bonigarcia.wdm.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,6 +9,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
@@ -44,10 +42,10 @@ public class StatesTest {
 
     @BeforeClass
     public static void setupClass() {
-        MarionetteDriverManager.getInstance().setup();
+        FirefoxDriverManager.getInstance().setup();
         ChromeDriverManager.getInstance().setup();
-        InternetExplorerDriverManager.getInstance().setup();
-        EdgeDriverManager.getInstance().setup();
+        //InternetExplorerDriverManager.getInstance().setup();
+        //EdgeDriverManager.getInstance().setup();
     }
 
     @Before
@@ -55,6 +53,7 @@ public class StatesTest {
         driver = new FirefoxDriver();
         //driver = new ChromeDriver();
         //driver = new InternetExplorerDriver();
+        //driver = new EdgeDriver();
         baseUrl = BASE_URL;
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
     }
@@ -87,6 +86,9 @@ public class StatesTest {
         }
 
         assertEquals("State", driver.findElement(By.cssSelector("th")).getText());
-        assertEquals("Ontario", driver.findElement(By.xpath("//tr[9]/td")).getText());
+        assertEquals("Ontario", driver.findElement(By.xpath("//tr[9]/td[1]")).getText());
+        //assertEquals("Florida", driver.findElement(By.xpath("//tr[9]/td[1]")).getText());
+        //assertEquals("Virginia", driver.findElement(By.xpath("//tr[46]/td[1]")).getText());
+        //assertEquals("VA", driver.findElement(By.xpath("//tr[46]/td[2]")).getText());
     }
 }

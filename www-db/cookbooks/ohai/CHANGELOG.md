@@ -2,6 +2,36 @@
 
 This file is used to list changes made in each version of the ohai cookbook.
 
+## 5.2.0 (2017-08-17)
+
+- Resolve multiple issues with Windows paths that caused the cookbook to converge on every run or fail
+- Move maintainer information to the readme
+- Add testing on Chef 12.7 in Travis
+- Move helpers to their own modules and add testing framework
+
+## 5.1.0 (2017-05-06)
+
+- Workaround action_class bug by requiring Chef 12.7+
+
+## 5.0.4 (2017-04-25)
+
+- Fix lack of .rb extension when deleting plugins.
+
+## 5.0.3 (2017-04-06)
+
+- Use class_eval again in the custom resource to provide Chef 12.5/12.6 compatibility
+- Remove kind_of and use name_property not name_attribute
+- Fix failures on Chef 13
+
+## 5.0.2 (2017-03-24)
+
+- Remove class_eval
+
+## 5.0.1 (2017-03-14)
+
+- Test with Delivery Local Mode
+- Bump the dependency to 12.7+ due to failures on 12.5-12.6
+
 ## 5.0.0 (2017-02-23)
 
 - Require Chef 12.5+ and remove compat_resource dependency

@@ -2,6 +2,16 @@
 
 This file is used to list changes made in each version of the openssl cookbook.
 
+## 7.1.0 (2017-05-30)
+
+- Add supported platforms to the metdata
+- Fix amazon support
+- Remove class_eval usage and require Chef 12.7+
+
+## 7.0.1 (2017-03-21)
+
+- Fix compatibility with Chef 12.5.1
+
 ## 7.0.0 (2017-03-06)
 
 - Converted LWRPs to custom resources, increasing the chef-client dependency to 12.5+. This fixes the bus where each resource notified on every run even if it didn't actually update the files on disk.

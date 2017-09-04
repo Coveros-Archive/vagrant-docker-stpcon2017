@@ -1,6 +1,6 @@
 # platform dependent attributes
 case node['platform']
-when 'redhat', 'centos', 'fedora', 'scientific', 'amazon'
+when 'redhat', 'centos', 'scientific', 'amazon'
   default['mariadb']['configuration']['path'] = '/etc'
   default['mariadb']['configuration']['includedir'] = '/etc/my.cnf.d'
   default['mariadb']['mysqld']['socket'] = '/var/lib/mysql/mysql.sock'
@@ -109,6 +109,7 @@ default['mariadb']['galera']['wsrep_slave_threads'] = '4'
 # Default value is '1' but can be relaxed to '2' or even '0' with Galera
 default['mariadb']['galera']['innodb_flush_log_at_trx_commit'] = '2'
 default['mariadb']['galera']['wsrep_node_address_interface'] = ''
+default['mariadb']['galera']['wsrep_node_port'] = ''
 default['mariadb']['galera']['wsrep_node_incoming_address_interface'] = ''
 default['mariadb']['galera']['wsrep_provider_options'] = {
   'gcache.size' => '512M'
@@ -170,6 +171,7 @@ default['mariadb']['debian']['host'] = 'localhost'
 default['mariadb']['install']['type'] = 'package'
 default['mariadb']['install']['version'] = '10.0'
 default['mariadb']['install']['prefer_os_package'] = false
+default['mariadb']['install']['prefer_scl_package'] = false
 default['mariadb']['install']['extra_packages'] = true
 
 #
@@ -194,3 +196,4 @@ default['mariadb']['audit_plugin']['server_audit_output_type'] = 'file'
 # Syslog(require server_audit_output_type = syslog)
 default['mariadb']['audit_plugin']['server_audit_syslog_facility'] = 'LOG_USER'
 default['mariadb']['audit_plugin']['server_audit_syslog_priority'] = 'LOG_INFO'
+default['mariadb']['audit_plugin']['server_audit_logging'] = 'OFF'

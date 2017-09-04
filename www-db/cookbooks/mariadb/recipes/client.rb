@@ -22,84 +22,26 @@
 Chef::Recipe.send(:include, MariaDB::Helper)
 case node['mariadb']['install']['type']
 when 'package'
-  use_os_package = use_os_native_package?(
-    node['mariadb']['install']['prefer_os_package'],
-    node['platform'],
-    node['platform_version']
-  )
+  # Include recipes to install repositories
+  include_recipe "#{cookbook_name}::_mariadb_repository"
 
-  use_scl_package = use_scl_package?(
-    node['mariadb']['install']['prefer_scl_package'],
-    node['platform'],
-    node['platform_version']
-  )
+  # Include RH specific recipe
+  include_recipe "#{cookbook_name}::_redhat_client" if \
+    %w(redhat centos scientific amazon).include?(node['platform'])
 
-  include_recipe "#{cookbook_name}::repository" unless use_os_package || use_scl_package
-
-  case node['platform_family']
-  when 'rhel'
-    # On CentOS at least, there's a conflict between MariaDB and mysql-libs
-    package 'mysql-libs' do
-      action :remove
-      not_if { use_os_package }
-    end
-    # rubocop:disable BlockNesting
-    if use_os_package
-      node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                        %w(mariadb mariadb-devel)
-                                                      else
-                                                        %w(mariadb)
-                                                      end
-    elsif use_scl_package
-      node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                        scl_package_name(node['mariadb']['install']['version'],
-                                                                         'mariadb', 'mariadb-devel')
-                                                      else
-                                                        scl_package_name(node['mariadb']['install']['version'],
-                                                                         'mariadb')
-                                                      end
-    else
-      node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                        %w(MariaDB-client MariaDB-devel)
-                                                      else
-                                                        %w(MariaDB-client)
-                                                      end
-    end
-  when 'fedora'
-    if use_scl_package
-      node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                        scl_package_name(node['mariadb']['install']['version'],
-                                                                         'client', 'devel')
-                                                      else
-                                                        scl_package_name(node['mariadb']['install']['version'],
-                                                                         'client')
-                                                      end
-    else
-      node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                        %w(mariadb mariadb-devel)
-                                                      else
-                                                        %w(mariadb)
-                                                      end
-    end
-    # rubocop:enable BlockNesting
-  when 'suse'
-    node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                      %w(mariadb-community-server-client libmariadbclient-devel)
-                                                    else
-                                                      %w(mariadb-community-server-client)
-                                                    end
-  when 'debian'
-    node.default['mariadb']['client']['packages'] = if node['mariadb']['client']['development_files']
-                                                      %W(mariadb-client-#{node['mariadb']['install']['version']}
-                                                         libmariadbclient-dev)
-                                                    else
-                                                      %W(mariadb-client-#{node['mariadb']['install']['version']})
-                                                    end
+  # Install client package
+  client_package_name = packages_names_to_install(node['platform'],
+                                                  node['platform_version'],
+                                                  node['mariadb']['install']['version'],
+                                                  node['mariadb']['install']['prefer_os_package'],
+                                                  node['mariadb']['install']['prefer_scl_package'])['client']
+  package 'MariaDB-client' do
+    package_name client_package_name
+    action :install
   end
 
-  node['mariadb']['client']['packages'].each do |name|
-    package name
-  end
+  # Install devel package if required
+  include_recipe "#{cookbook_name}::devel" if node['mariadb']['client']['development_files']
 when 'from_source'
   # To be filled as soon as possible
 end

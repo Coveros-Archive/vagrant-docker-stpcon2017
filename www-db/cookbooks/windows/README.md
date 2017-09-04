@@ -271,6 +271,24 @@ windows_http_acl 'http://+:50051/' do
 end
 ```
 
+### windows_pagefile
+
+Configures the file that provides virtual memory for applications requiring more memory than available RAM or that are paged out to free up memory in use.
+
+
+#### Actions
+
+- `:set` - configures the default pagefile, creating if it doesn't exist.
+- `:delete` - deletes the specified pagefile.
+
+#### Properties
+
+- `name` - the path to the pagefile,  String, name_property: true
+- `system_managed` - configures whether the system manages the pagefile size. [true, false]
+- `automatic_managed` - all of the settings are managed by the system. If this is set to true, other settings will be ignored. [true, false], default: false
+- `initial_size` - initial size of the pagefile in bytes. Integer
+- `maximum_size` - maximum size of the pagefile in bytes. Integer
+
 ### windows_printer_port
 
 Create and delete TCP/IPv4 printer ports.
@@ -423,16 +441,16 @@ Creates and modifies Windows shortcuts.
 
 #### Examples
 
-Add a shortcut all users desktop:
+Add a shortcut to all users desktop:
 
 ```ruby
 require 'win32ole'
 all_users_desktop = WIN32OLE.new("WScript.Shell").SpecialFolders("AllUsersDesktop")
 
 windows_shortcut "#{all_users_desktop}/Notepad.lnk" do
-  target "C:\\WINDOWS\\notepad.exe"
+  target "C:\\Windows\\notepad.exe"
   description "Launch Notepad"
-  iconlocation "C:\\windows\\notepad.exe, 0"
+  iconlocation "C:\\Windows\\notepad.exe,0"
 end
 ```
 

@@ -21,17 +21,3 @@ installed on the host system.
 
     vagrant up
 		
-## Troubleshooting:
-
-If you get ``Error executing action `install` on resource 'apt_package[mysql-server-5.5]'``
-then it is because the download package for mysql-server-5.5 on Ubuntu Trusty was updated. 
-This is what happened during the demo.
-
-Just edit `cookbooks/mysql/libraries/helpers.rb` and change the `'5.5' && trusty?` line (line number 187)
-to match the new file name. For example, I changed:
-
-    return '5.5.52-0ubuntu0.14.04.1' if major_version == '5.5' && trusty?
-
-to be
-
-    return '5.5.53-0ubuntu0.14.04.1' if major_version == '5.5' && trusty?

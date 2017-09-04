@@ -1,6 +1,6 @@
 # ohai Cookbook
 
-[![Build Status](https://travis-ci.org/chef-cookbooks/ohai.svg?branch=master)](https://travis-ci.org/chef-cookbooks/ohai) [![Cookbook Version](https://img.shields.io/cookbook/v/ohai.svg)](https://supermarket.chef.io/cookbooks/ohai)
+[![Build Status](https://travis-ci.org/chef-cookbooks/ohai.svg?branch=master)](https://travis-ci.org/chef-cookbooks/ohai) [![Build status](https://ci.appveyor.com/api/projects/status/lgok2kr6l007s8hf/branch/master?svg=true)](https://ci.appveyor.com/project/ChefWindowsCookbooks/ohai/branch/master) [![Cookbook Version](https://img.shields.io/cookbook/v/ohai.svg)](https://supermarket.chef.io/cookbooks/ohai)
 
 Contains custom resources for adding Ohai hints and installing custom Ohai plugins. Handles path creation as well as the reloading of Ohai so that new data will be available during the same run.
 
@@ -16,13 +16,13 @@ Contains custom resources for adding Ohai hints and installing custom Ohai plugi
 
 ### Chef
 
-- Chef 12.5+
+- Chef 12.7+
 
 ### Cookbooks
 
 - none
 
-## Custom Resources (Providers)
+## Custom Resources
 
 ### `ohai_hint`
 
@@ -113,9 +113,11 @@ You can check for the creation or deletion of ohai plugins with chefspec using t
 - create_ohai_plugin
 - delete_ohai_plugin
 
-## License & Authors
+## Maintainers
 
-**Author:** Cookbook Engineering Team ([cookbooks@chef.io](mailto:cookbooks@chef.io))
+This cookbook is maintained by Chef's Community Cookbook Engineering team. Our goal is to improve cookbook quality and to aid the community in contributing to cookbooks. To learn more about our team, process, and design goals see our [team documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/COOKBOOK_TEAM.MD). To learn more about contributing to cookbooks like this see our [contributing documentation](https://github.com/chef-cookbooks/community_cookbook_documentation/blob/master/CONTRIBUTING.MD), or if you have general questions about this cookbook come chat with us in #cookbok-engineering on the [Chef Community Slack](http://community-slack.chef.io/)
+
+## License
 
 **Copyright:** 2011-2016, Chef Software, Inc.
 

@@ -19,7 +19,7 @@ services:
     volumes:
       - ./www/src/:/var/www/html/
     environment:
-      NAME: "StarCanada 2016"
+      NAME: "STPCon Fall 2017"
       DB_HOST: "db"
       DB_NAME: "statedb"
       DB_USER: "state_user"

@@ -2,11 +2,45 @@
 
 This file is used to list changes made in each version of the windows cookbook.
 
+## 3.1.2 (2017-08-14)
+
+- Revert "Require path in the share resource instead of raising if it's missing" which was causing failures due to a bug in the chef-client
+
+## 3.1.1 (2017-06-13)
+
+- Replace Windows 7 testing with Windows 10 testing
+- Expand debug logging in the pagefile resource
+- Require path in the share resource instead of raising if it's missing
+- Make pagefile properly fail the run if the command fails to run
+
+## 3.1.0 (2017-05-30)
+
+- Updated resource documentation for windows_pagefile
+- Declare windows_feature as why-runnable
+- Remove action_class.class_eval usage and require 12.7+ as class_eval is causing issues with later versions of Chef
+
+## 3.0.5 (2017-04-07)
+
+- Add support for windows_task resource to run on non-English editions of Windows
+- Ensure chef-client 12.6 compatibility with action_class.class_eval
+
+## 3.0.4 (2017-03-29)
+
+- restoring the `cached_file` helper as downstream cookbooks use it.
+
+## 3.0.3 (2017-03-28)
+
+- Correct a typo in a Log message
+
+## 3.0.2 (2017-03-21)
+
+- Fix `windows_zipfile` resource to properly download and cache the zip archives
+
 ## 3.0.1 (2017-03-17)
 
 - Fix `windows_share` to be fully idempotent.  Fixes #447
 
-## 3.0.0 (UNRELEASED!)
+## 3.0.0 (2017-03-15)
 
 **Warning** This release includes multiple breaking changes as we refactored all existing resources and resolved many longstanding bugs. We highly recommend exercising caution and fully testing this new version before rolling it out to a production environment.
 
